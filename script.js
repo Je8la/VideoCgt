@@ -1,4 +1,5 @@
 const videos = window.CGT_VIDEOS || [];
+
 let openVideoId = null;
 let currentSearch = '';
 let currentTagFilter = 'tutti';
@@ -17,19 +18,26 @@ function normalizeText(value) {
 
 function getFilteredVideos() {
   return videos.filter((video) => {
-    const matchesText =
-      currentSearch === '' ||
-      normalizeText(video.title).includes(currentSearch) ||
-      normalizeText(video.description).includes(currentSearch) ||
-      normalizeText(video.theme).includes(currentSearch) ||
-      normalizeText(video.tag).includes(currentSearch);
+    const title = normalizeText(video.title);
+    const description = normalizeText(video.description);
+    const theme = normalizeText(video.theme);
+    const tag = normalizeText(video.tag);
 
-    const matchesTag =
-      currentTagFilter === 'tutti' ||
-      video.theme === currentTagFilter ||
-      video.tag === currentTagFilter;
+    const matchesSearch =
+      !currentSearch ||
+      title.includes(currentSearch) ||
+      description.includes(currentSearch) ||
+      theme.includes(currentSearch) ||
+      tag.includes(currentSearch);
 
-    return matchesText && matchesTag;
+    const selectedFilter = normalizeText(currentTagFilter);
+
+    const matchesFilter =
+      selectedFilter === 'tutti' ||
+      theme === selectedFilter ||
+      tag === selectedFilter;
+
+    return matchesSearch && matchesFilter;
   });
 }
 
@@ -85,7 +93,9 @@ function renderList() {
     })
     .join('');
 
-  listEl.querySelectorAll('[data-video-id]').forEach((card) => {
+  const cards = listEl.querySelectorAll('[data-video-id]');
+
+  cards.forEach((card) => {
     card.addEventListener('click', () => {
       const id = card.getAttribute('data-video-id');
       openVideoId = openVideoId === id ? null : id;
@@ -95,22 +105,22 @@ function renderList() {
 }
 
 function bindFilters() {
-  searchInput.addEventListener('input', (event) => {
-    currentSearch = normalizeText(event.target.value);
-    openVideoId = null;
-    renderList();
-  });
+  if (searchInput) {
+    searchInput.addEventListener('input', (event) => {
+      currentSearch = normalizeText(event.target.value);
+      openVideoId = null;
+      renderList();
+    });
+  }
 
-  tagFilter.addEventListener('change', (event) => {
-    currentTagFilter = event.target.value;
-    openVideoId = null;
-    renderList();
-  });
+  if (tagFilter) {
+    tagFilter.addEventListener('change', (event) => {
+      currentTagFilter = event.target.value;
+      openVideoId = null;
+      renderList();
+    });
+  }
 }
 
-function render() {
-  bindFilters();
-  renderList();
-}
-
-render();
+bindFilters();
+renderList();
