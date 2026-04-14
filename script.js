@@ -2,7 +2,7 @@ let videos = [];
 
 let openVideoId = null;
 let currentSearch = '';
-let currentTagFilter = 'tutti';
+let currentCategoryFilter = 'tutti';
 let currentPage = 1;
 
 const PAGE_SIZE = 10;
@@ -21,6 +21,29 @@ function normalizeText(value) {
   return (value || '').toString().trim().toLowerCase();
 }
 
+function isHomepageVideo(video) {
+  return video.homepage === true || normalizeText(video.homepage) === 'true';
+}
+
+function getVideoTags(video) {
+  return (video.tag || '')
+    .split(',')
+    .map((tag) => tag.trim())
+    .filter(Boolean);
+}
+
+function getVideoCategories(video) {
+  const categories = [];
+
+  if (video.theme) {
+    categories.push(video.theme);
+  }
+
+  categories.push(...getVideoTags(video));
+
+  return [...new Set(categories)];
+}
+
 async function loadVideos() {
   try {
     const response = await fetch('videos.json');
@@ -30,6 +53,7 @@ async function loadVideos() {
     }
 
     videos = await response.json();
+    buildFilterOptions();
     renderList();
   } catch (error) {
     console.error(error);
@@ -43,16 +67,39 @@ async function loadVideos() {
   }
 }
 
+function buildFilterOptions() {
+  if (!tagFilter) return;
+
+  const values = new Set();
+
+  videos.forEach((video) => {
+    getVideoCategories(video).forEach((value) => {
+      if (value) values.add(value);
+    });
+  });
+
+  const sortedValues = [...values].sort((a, b) =>
+    a.localeCompare(b, 'it', { sensitivity: 'base' })
+  );
+
+  tagFilter.innerHTML = `
+    <option value="tutti">Seleziona categoria</option>
+    ${sortedValues
+      .map((value) => `<option value="${value}">${value}</option>`)
+      .join('')}
+  `;
+}
+
 function hasActiveSearch() {
   return currentSearch.length > 0;
 }
 
 function hasActiveFilter() {
-  return normalizeText(currentTagFilter) !== 'tutti';
+  return normalizeText(currentCategoryFilter) !== 'tutti';
 }
 
 function getHomepageVideos() {
-  return videos.filter((video) => video.homepage === true).slice(0, 5);
+  return videos.filter((video) => isHomepageVideo(video)).slice(0, 5);
 }
 
 function getFilteredVideos() {
@@ -67,21 +114,21 @@ function getFilteredVideos() {
     const title = normalizeText(video.title);
     const description = normalizeText(video.description);
     const theme = normalizeText(video.theme);
-    const tag = normalizeText(video.tag);
+    const tags = getVideoTags(video).map(normalizeText);
 
     const matchesSearch =
       !searchActive ||
       title.includes(currentSearch) ||
       description.includes(currentSearch) ||
       theme.includes(currentSearch) ||
-      tag.includes(currentSearch);
+      tags.some((tag) => tag.includes(currentSearch));
 
-    const selectedFilter = normalizeText(currentTagFilter);
+    const selectedFilter = normalizeText(currentCategoryFilter);
 
     const matchesFilter =
       selectedFilter === 'tutti' ||
       theme === selectedFilter ||
-      tag === selectedFilter;
+      tags.includes(selectedFilter);
 
     return matchesSearch && matchesFilter;
   });
@@ -153,6 +200,7 @@ function renderList() {
   listEl.innerHTML = paginated
     .map((video) => {
       const isOpen = video.id === openVideoId;
+      const tags = getVideoTags(video);
 
       return `
         <div class="video-card ${isOpen ? 'selected' : ''}" data-video-id="${video.id}">
@@ -179,8 +227,8 @@ function renderList() {
 
           <div class="video-card-body">
             <div class="video-meta-row">
-              <span class="video-theme">${video.theme}</span>
-              <span class="video-tag">${video.tag}</span>
+              ${video.theme ? `<span class="video-theme">${video.theme}</span>` : ''}
+              ${tags.map((tag) => `<span class="video-tag">${tag}</span>`).join('')}
             </div>
             <h3>${video.title}</h3>
             <p>${video.description}</p>
@@ -213,7 +261,7 @@ function bindFilters() {
 
   if (tagFilter) {
     tagFilter.addEventListener('change', (event) => {
-      currentTagFilter = event.target.value;
+      currentCategoryFilter = event.target.value;
       currentPage = 1;
       openVideoId = null;
       renderList();
