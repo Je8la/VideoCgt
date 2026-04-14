@@ -6,7 +6,7 @@ window.CGT_VIDEOS = [
     theme: 'CAT Grade 3D',
     tag: 'Testimonianze',
     youtubeId: 'vBAl0JukQp8',
-    featured: true,
+    homepage: true,
   },
   {
     id: 'personalizzazione-schermata',
@@ -15,7 +15,7 @@ window.CGT_VIDEOS = [
     theme: 'CAT Grade 3D',
     tag: 'Tutorial',
     youtubeId: 'qg_hVLB3qug',
-    featured: false,
+    homepage: true,
   },
   {
     id: 'progetto-remoto',
@@ -24,6 +24,7 @@ window.CGT_VIDEOS = [
     theme: 'CAT Grade 3D',
     tag: 'Tutorial',
     youtubeId: 'myKvJujZil8',
-    featured: false,
+    homepage: true,
   },
 ];
+ 
