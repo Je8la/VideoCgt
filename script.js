@@ -1,4 +1,4 @@
-const videos = window.CGT_VIDEOS || [];
+let videos = [];
 
 let openVideoId = null;
 let currentSearch = '';
@@ -21,6 +21,28 @@ function normalizeText(value) {
   return (value || '').toString().trim().toLowerCase();
 }
 
+async function loadVideos() {
+  try {
+    const response = await fetch('./videos.json');
+
+    if (!response.ok) {
+      throw new Error(`Errore caricamento videos.json: ${response.status}`);
+    }
+
+    videos = await response.json();
+    renderList();
+  } catch (error) {
+    console.error(error);
+    listEl.innerHTML = `
+      <div class="empty-state">
+        Errore nel caricamento dei contenuti video.
+      </div>
+    `;
+    paginationEl.innerHTML = '';
+    resultsInfoEl.textContent = '';
+  }
+}
+
 function hasActiveSearch() {
   return currentSearch.length > 0;
 }
@@ -30,14 +52,13 @@ function hasActiveFilter() {
 }
 
 function getHomepageVideos() {
-  return videos.filter((video) => video.homepage).slice(0, 5);
+  return videos.filter((video) => video.homepage === true).slice(0, 5);
 }
 
 function getFilteredVideos() {
   const searchActive = hasActiveSearch();
   const filterActive = hasActiveFilter();
 
-  // Home iniziale: massimo 5 video marcati come homepage
   if (!searchActive && !filterActive) {
     return getHomepageVideos();
   }
@@ -201,4 +222,4 @@ function bindFilters() {
 }
 
 bindFilters();
-renderList();
+loadVideos();
