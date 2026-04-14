@@ -1,4 +1,5 @@
 # Portale Video Tecnologie CGT-CAT
+
 Portale web statico pensato per la consultazione rapida via QR code di video istruzioni, tutorial e contenuti tecnici CGT-CAT, con fruizione mobile-friendly.
 
 ## Contesto
@@ -16,23 +17,24 @@ Permettere all’utente di:
 - filtro per argomento
 - player video embedded direttamente nella card
 - struttura facilmente estendibile con nuovi video
+- gestione contenuti separata tramite file `videos.json`
 
 ## Struttura file
-- index.html - struttura pagina
-- styles.css - stile grafico e responsive
-- videos.js - archivio contenuti video
-- script.js - logica di rendering, ricerca, filtro e paginazione
+- `index.html` - struttura pagina
+- `styles.css` - stile grafico e responsive
+- `videos.json` - archivio contenuti video
+- `script.js` - logica di caricamento dati, rendering, ricerca, filtro e paginazione
 
 ## Gestione contenuti
-Per aggiungere un nuovo video, inserire un nuovo oggetto nell’array presente in 'videos.js' con la seguente struttura:
+Per aggiungere un nuovo video, inserire un nuovo oggetto nell’array presente in `videos.json` con la seguente struttura:
 
-```js
+```json
 {
-  id: 'id-univoco',
-  title: 'Titolo video',
-  description: 'Breve descrizione',
-  theme: 'Macro tema',
-  tag: 'Tag o tipologia',
-  youtubeId: 'ID YouTube',
-  homepage: false
+  "id": "id-univoco",
+  "title": "Titolo video",
+  "description": "Breve descrizione",
+  "theme": "Macro tema",
+  "tag": "Tag o tipologia",
+  "youtubeId": "ID YouTube",
+  "homepage": false
 }
