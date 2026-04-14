@@ -2,18 +2,30 @@
 <html lang="it">
   <head>
     <meta charset="UTF-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0"
-    />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>CGT | Portale Video Tecnologie</title>
     <meta
       name="description"
       content="Portale video CGT per consultare contenuti tecnici via QR code."
     />
+    <meta
+      name="author"
+      content="Alejandro Febres Vilchez"
+    />
+    <meta
+      name="application-name"
+      content="Portale Video Tecnologie CGT-CAT"
+    />
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
+    <!--
+      Progetto: Portale Video Tecnologie CGT-CAT
+      Scopo: accesso rapido via QR code a video istruzioni, tutorial e testimonianze.
+      Proposta e sviluppo iniziale: Alejandro Febres Vilchez
+      Contesto: progetto interno CGT per consultazione mobile-friendly di contenuti tecnici.
+    -->
+
     <header class="hero">
       <div class="hero-overlay">
         <div class="container hero-content">
@@ -27,13 +39,27 @@
     </header>
 
     <main class="container main-content">
-      <section class="filters" aria-label="Filtri contenuti">
-        <button class="filter-btn active" data-filter="tutti">Tutti</button>
-        <button class="filter-btn" data-filter="video">Video</button>
-        <button class="filter-btn" data-filter="short">Short</button>
-      </section>
+      <section class="filters-panel" aria-label="Ricerca e filtri contenuti">
+        <div class="search-wrap">
+          <label for="search-input" class="sr-only">Cerca video</label>
+          <input
+            id="search-input"
+            class="search-input"
+            type="text"
+            placeholder="Cerca video, argomento o parola chiave..."
+          />
+        </div>
 
-      <section id="video-player-section" class="video-player-section"></section>
+        <div class="select-wrap">
+          <label for="tag-filter" class="sr-only">Filtra per argomento</label>
+          <select id="tag-filter" class="tag-select">
+            <option value="tutti">Tutti</option>
+            <option value="CAT Grade 3D">CAT Grade 3D</option>
+            <option value="Tutorial">Tutorial</option>
+            <option value="Testimonianze">Testimonianze</option>
+          </select>
+        </div>
+      </section>
 
       <section>
         <div id="video-list" class="video-list"></div>
