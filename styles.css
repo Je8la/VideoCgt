@@ -26,10 +26,6 @@ body {
   min-height: 100vh;
 }
 
-button {
-  font: inherit;
-}
-
 .container {
   max-width: 1200px;
   margin: 0 auto;
@@ -85,31 +81,36 @@ button {
   padding-bottom: 40px;
 }
 
-.filters {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
+.filters-panel {
+  display: grid;
+  grid-template-columns: 1.5fr 0.8fr;
+  gap: 14px;
   margin: 24px 0 20px;
+  align-items: stretch;
 }
 
-.filter-btn {
-  border: 0;
-  background: #e5e7eb;
+.search-wrap,
+.select-wrap {
+  width: 100%;
+}
+
+.search-input,
+.tag-select {
+  width: 100%;
+  border: 1px solid var(--border);
+  background: white;
   color: var(--text);
-  padding: 10px 16px;
-  border-radius: 999px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: 0.2s ease;
+  border-radius: 16px;
+  padding: 14px 16px;
+  font-size: 1rem;
+  box-shadow: var(--shadow-soft);
+  outline: none;
 }
 
-.filter-btn.active {
-  background: var(--dark);
-  color: white;
-}
-
-.video-player-section {
-  margin: 0 0 24px;
+.search-input:focus,
+.tag-select:focus {
+  border-color: var(--cgt-yellow);
+  box-shadow: 0 0 0 3px rgba(242, 194, 0, 0.2);
 }
 
 .video-list {
@@ -168,7 +169,7 @@ button {
 
 .video-card-body h3 {
   margin: 10px 0 8px;
-  font-size: 1.6rem;
+  font-size: 1.5rem;
   line-height: 1.2;
   color: #2684ea;
 }
@@ -187,7 +188,7 @@ button {
   align-items: center;
 }
 
-.video-type {
+.video-theme {
   background: var(--dark);
   color: white;
   padding: 5px 9px;
@@ -197,13 +198,37 @@ button {
   letter-spacing: 0.05em;
 }
 
-.video-category {
+.video-tag {
   background: #f3f4f6;
   color: #374151;
   padding: 5px 9px;
   border-radius: 999px;
   font-size: 0.75rem;
   font-weight: 600;
+}
+
+.empty-state {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  padding: 24px;
+  color: var(--muted);
+  box-shadow: var(--shadow-soft);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .filters-panel {
+    grid-template-columns: 1fr;
+  }
 }
 
 @media (max-width: 640px) {
@@ -230,5 +255,10 @@ button {
 
   .video-card-body h3 {
     font-size: 1.1rem;
+  }
+
+  .search-input,
+  .tag-select {
+    font-size: 16px;
   }
 }
